@@ -1,0 +1,79 @@
+---
+title: "Práctica 1. Repaso de estadística"
+output: github_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# Práctica 1. Repaso de estadística
+
+## Objetivo 
+
+- Analizar una muestra con técnicas básicas de la estadística elemental.
+
+- Documentar el trabajo.
+
+```{r}
+# Establecer una semilla basada en el ID del estudiante para garantizar la unicidad
+generar_datos <- function(id_estudiante) {
+  set.seed(id_estudiante)
+
+  # Grupo objetivo: distribución normal con una media más alta
+  grupo_objetivo <- round(rnorm(10, mean = 50, sd = 5), 2)
+
+  # Grupo control: distribución normal con una media más baja
+  grupo_control <- round(rnorm(10, mean = 40, sd = 5), 2)
+
+  return(data.frame(grupo_objetivo = grupo_objetivo, grupo_control = grupo_control))
+}
+
+# Ejemplo para un estudiante con ID específico (ejemplo: 1)
+id_estudiante <- 1:30
+datos_estudiante <- sapply(id_estudiante, function(x) generar_datos(x), simplify = F)
+datos_estudiante
+```
+
+## Calcula las medias de grupo control y grupo objetivo.
+
+Las medias con R se calcularían de esta manera.
+
+```{r}
+# Calculo de medias
+media_grupo_objetivo <- mean(datos_estudiante[[1]]$grupo_objetivo)
+media_grupo_objetivo
+media_grupo_control <- mean(datos_estudiante[[1]]$grupo_control)
+media_grupo_objetivo
+
+# Calculo de la diferencia entre las medias
+diferencia_medias <- media_grupo_objetivo - media_grupo_control
+diferencia_medias
+```
+
+Para hacer estos cálculos, usa https://rdrr.io/snippets/, transcribiendo tus datos allí. 
+
+## Crea histogramas de grupo objetivo y grupo control.
+
+Para la creación de histogramas, usa https://rdrr.io/snippets/, transcribiendo tus datos allí. Una guía básica para la creación de un histograma en R es la siguiente:
+
+```{r}
+library(ggplot2)
+
+# Crear histograma para el grupo objetivo
+ggplot(data.frame(datos_estudiante[[1]]$grupo_objetivo), aes(x = datos_estudiante[[1]]$grupo_objetivo)) +
+  geom_histogram(binwidth = 1, fill = "blue", color = "black") +
+  ggtitle("Histograma del Grupo Objetivo")
+
+# Crear histograma para el grupo control
+ggplot(data.frame(datos_estudiante[[1]]$grupo_control), aes(x = datos_estudiante[[1]]$grupo_control)) +
+  geom_histogram(binwidth = 1, fill = "red", color = "black") +
+  ggtitle("Histograma del Grupo Control")
+```
+
+## Documenta el trabajo
+
+- Redacta, en un párrafo, cómo se obtuvo la muestra, cómo se realizaron los cálculos y cómo construyeron los histogramas.
+
+- Describe los resultados obtenidos en un párrafo. Puedes adjuntar tus histogramas.
+
+Envía todo por correo electrónico a jmartinez19\@uasd.edu.do
+
