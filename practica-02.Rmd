@@ -1,0 +1,68 @@
+---
+title: "Práctica 2. Dos (vapuleados) índices de diversidad"
+output: github_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# Práctica 2. Dos (vapuleados) índices de diversidad
+
+## Objetivo 
+
+- Analizar la diversidad de forma muy elemental.
+
+- Documentar el trabajo.
+
+## Datos disponibles
+
+```{r}
+# Generar datos para la comunidad con abundancias desiguales
+id_estudiante <- 1:30
+generar_mc <- function(id_estudiante) {
+  nombres_especies <- paste("Especie", 1:10)
+  id_estudiante_p1 <- id_estudiante + 1
+  abundancia_desigual <- c(
+    rep(id_estudiante_p1, 2),
+    rep(id_estudiante_p1^3, 4),
+    rep(id_estudiante_p1^2, 3),
+    rep(id_estudiante_p1^4, 1))
+  abundancia_homogenea <- rep(id_estudiante, 10)
+  mc <- as.data.frame(x = matrix(data = c(abundancia_desigual, abundancia_homogenea), byrow = T,
+                                 ncol = length(nombres_especies)))
+  colnames(mc) <- nombres_especies
+  return(mc)
+}
+lista_datos <- lapply(id_estudiante, function(x) generar_mc(x))
+names(lista_datos) <- paste0('Estudiante número: ', 1:30)
+```
+
+## Mandatos para la asignación
+
+1. **Análisis de la Comunidad Desigual:**
+   - Calcula el índice de diversidad de Shannon para la comunidad con abundancias desiguales.
+   - Calcula el índice de equidad de Simpson (Gini-Simpson) para esta comunidad.
+
+2. **Análisis de la Comunidad Homogénea:**
+   - Realiza los mismos cálculos para la comunidad con abundancias homogéneas.
+
+3. **Comparación y Discusión:**
+   - Compara los valores obtenidos para ambas comunidades.
+   - Discute por qué los índices son diferentes y qué implica esto sobre la diversidad y equidad en cada comunidad.
+
+4. **Envía todo por correo electrónico a jmartinez19\@uasd.edu.do**
+
+
+## Una ayudita
+
+
+
+## Rúbrica en formato Markdown
+
+| Criterios                             | Nivel 1 (En desarrollo) | Nivel 2 (Aceptable) | Nivel 3 (Bueno) | Nivel 4 (Excelente) |
+|---------------------------------------|-------------------------|---------------------|-----------------|---------------------|
+| Cálculo de índices de diversidad      | Cálculos incorrectos o incompletos | Cálculos correctos, pero con pequeños errores | Cálculos correctos y bien presentados | Cálculos correctos, bien presentados y con excelente claridad |
+| Interpretación y análisis             | Interpretación pobre o inexistente | Interpretación básica con algunos errores | Buena interpretación con análisis relevante | Interpretación profunda y análisis exhaustivo |
+| Comparación de comunidades            | Comparación superficial o incorrecta | Comparación adecuada, pero falta profundidad | Comparación detallada y relevante | Comparación exhaustiva y con insights profundos |
+| Calidad y claridad de la presentación | Presentación desorganizada y difícil de seguir | Presentación clara con algunos errores menores | Presentación bien estructurada y clara | Presentación excepcionalmente clara, bien estructurada y profesional |
+
+
