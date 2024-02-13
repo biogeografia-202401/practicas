@@ -5,6 +5,7 @@ editor_options:
   chunk_output_type: console
 ---
 
+
 # Práctica 2. Dos (vapuleados) índices de diversidad
 
 ## Objetivo 
@@ -35,6 +36,7 @@ generar_mc <- function(id_estudiante) {
 }
 lista_datos <- lapply(id_estudiante, function(x) generar_mc(x))
 names(lista_datos) <- paste0('Estudiante número: ', 1:30)
+lista_datos
 ```
 
 ## Mandatos para la asignación
