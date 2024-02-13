@@ -20,7 +20,7 @@ editor_options:
 # Generar datos para la comunidad con abundancias desiguales
 id_estudiante <- 1:30
 generar_mc <- function(id_estudiante) {
-  nombres_especies <- paste("Especie", 1:10)
+  nombres_especies <- paste("Sp", 1:10)
   id_estudiante_p1 <- id_estudiante + 1
   abundancia_desigual <- c(
     rep(id_estudiante_p1, 2),
