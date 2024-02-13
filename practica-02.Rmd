@@ -26,6 +26,7 @@ generar_mc <- function(id_estudiante) {
     rep(id_estudiante_p1^3, 4),
     rep(id_estudiante_p1^2, 3),
     rep(id_estudiante_p1^4, 1))
+  abundancia_desigual <- ifelse(abundancia_desigual>1000, abundancia_desigual%%1000, abundancia_desigual)
   abundancia_homogenea <- rep(id_estudiante, 10)
   mc <- as.data.frame(x = matrix(data = c(abundancia_desigual, abundancia_homogenea), byrow = T,
                                  ncol = length(nombres_especies)))
@@ -54,6 +55,46 @@ names(lista_datos) <- paste0('Estudiante número: ', 1:30)
 
 ## Una ayudita
 
+El índice de Shannon tiene la siguiente fórmula.
+
+![](img/shannon.jpg)
+
+Asumamos que un sitio de muestreo es una variable cualitativa, y cada especie es un "estado". Bajo esta lógica, la dispersión de esta variable se calcula usando las frecuencias relativas *p<sub>i</sub>* de los *q*-estados usando la conocida **entropía de Shannon** o *H* (1948):
+
+Desde el punto de vista ecológico, la **H** tiene dos propiedades importantes:
+
+- Crece al aumentar la riqueza de especies *q*.
+- Crece con la uniformidad (=equidad o equitabilidad, es decir, qué tan bien repartida se encuentra la abundancia entre las especies).
+
+Un ejemplo ilustra lo anterior:
+
+- Cinco especies, 55 individuos, abundancias desiguales:
+
+```{r}
+library(vegan)
+foo1 <- c(25, 16, 9, 4, 1)
+diversity(foo1)
+```
+
+- Cinco especies, 55 individuos, abundancias homogéneas
+
+```{r}
+foo2 <- c(11, 11, 11, 11, 11)
+diversity(foo2)
+log(5)
+```
+
+Otros índices miden exclusivamente la homogeneidad de la abundancia, a lo que se denomina equidad. Se trata de una de las componentes de la diversidad, y existen muchos índices "en el mercado" para medirla. Una medida común en trabajos de ecología numérica, pero que es inversa o contraria a la equidad, es el denominado **índice de concentración de Simpson** (1949), representado por *λ*, que equivale a la probabilidad de que dos individuos elegidos al azar pertenezcan a la misma especie.
+
+![](img/simpson.jpg)
+
+Este valor aumenta con la dominancia, por lo que realmente no mide diversidad, sino más bien inequidad o concentración. Para transformarlo en un índice de diversidad, se utiliza el índice de Gini-Simpson *D=1-λ*, o el inverso de Simpson *D=1/λ*. **Este último es menos sensible a cambios de la abundancia en las especies muy comunes**. En R, puedes hacer estos cálculos de esta manera:
+
+
+```{r}
+diversity(foo1, index = 'simpson')
+diversity(foo2, index = 'simpson')
+```
 
 
 ## Rúbrica en formato Markdown
