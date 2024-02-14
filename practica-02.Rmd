@@ -5,6 +5,7 @@ editor_options:
   chunk_output_type: console
 ---
 
+> Fecha límite de entrega: 14 de febrero de 2024, antes de las 11:55 pm.
 
 # Práctica 2. Dos (vapuleados) índices de diversidad
 
@@ -53,7 +54,7 @@ lista_datos
    - Compara los valores obtenidos para ambos sitios
    - Discute por qué los índices son diferentes y qué implica esto sobre la diversidad y equidad en cada sitio
 
-4. **Envía todo por correo electrónico a jmartinez19\@uasd.edu.do**, antes de las 11:55 pm del 13 de febrero de 2024.
+4. **Envía todo por correo electrónico a jmartinez19\@uasd.edu.do**, antes de las 11:55 pm del 14 de febrero de 2024 (día de lamol y lamitá).
 
 
 ## Una ayudita

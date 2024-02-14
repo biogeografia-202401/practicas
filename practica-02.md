@@ -1,13 +1,15 @@
 Práctica 2. Dos (vapuleados) índices de diversidad
 ================
 
+> Fecha límite de entrega: 14 de febrero de 2024, antes de las 11:55 pm.
+
 # Práctica 2. Dos (vapuleados) índices de diversidad
 
 ## Objetivo
 
--   Analizar la diversidad de forma muy elemental.
+- Analizar la diversidad de forma muy elemental.
 
--   Documentar el trabajo.
+- Documentar el trabajo.
 
 ## Datos disponibles
 
@@ -193,19 +195,20 @@ lista_datos
 ## Mandatos para la asignación
 
 1.  **Análisis del sitio desigual:**
-    -   Calcula el índice de diversidad de Shannon para el sitio con
-        abundancias desiguales.
-    -   Calcula el índice de equidad de Simpson (Gini-Simpson) para este
-        sitio.
+    - Calcula el índice de diversidad de Shannon para el sitio con
+      abundancias desiguales.
+    - Calcula el índice de equidad de Simpson (Gini-Simpson) para este
+      sitio.
 2.  **Análisis del sitio homogéneo:**
-    -   Realiza los mismos cálculos para el sitio con abundancias
-        homogéneas.
+    - Realiza los mismos cálculos para el sitio con abundancias
+      homogéneas.
 3.  **Comparación y discusión:**
-    -   Compara los valores obtenidos para ambos sitios
-    -   Discute por qué los índices son diferentes y qué implica esto
-        sobre la diversidad y equidad en cada sitio
+    - Compara los valores obtenidos para ambos sitios
+    - Discute por qué los índices son diferentes y qué implica esto
+      sobre la diversidad y equidad en cada sitio
 4.  **Envía todo por correo electrónico a jmartinez19@uasd.edu.do**,
-    antes de las 11:55 pm del 13 de febrero de 2024.
+    antes de las 11:55 pm del 14 de febrero de 2024 (día de lamol y
+    lamitá).
 
 ## Una ayudita
 
@@ -221,13 +224,13 @@ se calcula usando las frecuencias relativas *p<sub>i</sub>* de los
 Desde el punto de vista ecológico, la **H** tiene dos propiedades
 importantes:
 
--   Crece al aumentar la riqueza de especies *q*.
--   Crece con la uniformidad (=equidad o equitabilidad, es decir, qué
-    tan bien repartida se encuentra la abundancia entre las especies).
+- Crece al aumentar la riqueza de especies *q*.
+- Crece con la uniformidad (=equidad o equitabilidad, es decir, qué tan
+  bien repartida se encuentra la abundancia entre las especies).
 
 Un ejemplo ilustra lo anterior:
 
--   Cinco especies, 55 individuos, abundancias desiguales:
+- Cinco especies, 55 individuos, abundancias desiguales:
 
 ``` r
 library(vegan)
@@ -246,7 +249,7 @@ diversity(foo1)
 
     ## [1] 1.277269
 
--   Cinco especies, 55 individuos, abundancias homogéneas
+- Cinco especies, 55 individuos, abundancias homogéneas
 
 ``` r
 foo2 <- c(11, 11, 11, 11, 11)
