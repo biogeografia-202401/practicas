@@ -36,21 +36,22 @@ generar_mc <- function(id_estudiante) {
 }
 lista_datos <- lapply(id_estudiante, function(x) generar_mc(x))
 names(lista_datos) <- paste0('Estudiante número: ', 1:30)
+print('Matrices de comunidad de cada estudiante')
 lista_datos
 ```
 
 ## Mandatos para la asignación
 
-1. **Análisis de la Comunidad Desigual:**
-   - Calcula el índice de diversidad de Shannon para la comunidad con abundancias desiguales.
-   - Calcula el índice de equidad de Simpson (Gini-Simpson) para esta comunidad.
+1. **Análisis del sitio desigual:**
+   - Calcula el índice de diversidad de Shannon para el sitio con abundancias desiguales.
+   - Calcula el índice de equidad de Simpson (Gini-Simpson) para este sitio.
 
-2. **Análisis de la Comunidad Homogénea:**
-   - Realiza los mismos cálculos para la comunidad con abundancias homogéneas.
+2. **Análisis del sitio homogéneo:**
+   - Realiza los mismos cálculos para el sitio con abundancias homogéneas.
 
-3. **Comparación y Discusión:**
-   - Compara los valores obtenidos para ambas comunidades.
-   - Discute por qué los índices son diferentes y qué implica esto sobre la diversidad y equidad en cada comunidad.
+3. **Comparación y discusión:**
+   - Compara los valores obtenidos para ambos sitios
+   - Discute por qué los índices son diferentes y qué implica esto sobre la diversidad y equidad en cada sitio
 
 4. **Envía todo por correo electrónico a jmartinez19\@uasd.edu.do**, antes de las 11:55 pm del 13 de febrero de 2024.
 
@@ -105,7 +106,7 @@ diversity(foo2, index = 'simpson')
 |---------------------------------------|-------------------------|---------------------|-----------------|---------------------|
 | Cálculo de índices de diversidad      | Cálculos incorrectos o incompletos | Cálculos correctos, pero con pequeños errores | Cálculos correctos y bien presentados | Cálculos correctos, bien presentados y con excelente claridad |
 | Interpretación y análisis             | Interpretación pobre o inexistente | Interpretación básica con algunos errores | Buena interpretación con análisis relevante | Interpretación profunda y análisis exhaustivo |
-| Comparación de comunidades            | Comparación superficial o incorrecta | Comparación adecuada, pero falta profundidad | Comparación detallada y relevante | Comparación exhaustiva y con insights profundos |
+| Comparación de sitios de la comunidad            | Comparación superficial o incorrecta | Comparación adecuada, pero falta profundidad | Comparación detallada y relevante | Comparación exhaustiva y con insights profundos |
 | Calidad y claridad de la presentación | Presentación desorganizada y difícil de seguir | Presentación clara con algunos errores menores | Presentación bien estructurada y clara | Presentación excepcionalmente clara, bien estructurada y profesional |
 
 
