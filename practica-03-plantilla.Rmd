@@ -1,0 +1,734 @@
+---
+title: Datos y análisis para práctica de `r params$estudiante`
+author: "Elaborado por: José-Ramón Martínez-Batlle (jmartinez19@uasd.edu.do) <br> Facultad de Ciencias, Universidad Autónoma de Santo Domingo (UASD) <br> Santo Domingo, República Dominicana"
+output:
+  bookdown::html_document2:
+    code_folding: hide
+    toc: yes
+    toc_float: 
+      toc_collapsed: yes
+    toc_depth: 3
+    theme: cosmo
+    highlight: textmate
+    number_sections: yes
+lang: es
+editor: 
+  markdown
+self_contained: true
+editor_options: 
+  chunk_output_type: console
+bibliography: references.bib
+params:
+  estudiante: "Jose-Ramon-Martinez-Batlle"
+---
+
+<style>
+  pre code {
+    font-size: 12px;
+  }
+</style>
+
+<!-- Definiciones del tejido -->
+
+```{r include=FALSE}
+require(knitr)
+opts_chunk$set(
+  concordance=FALSE,
+  echo=TRUE,
+  cache=FALSE,
+  warning=FALSE,
+  error=FALSE,
+  message=FALSE)
+```
+
+## Carga de paquetes
+
+Son muchos los paquetes empleados en estos análisis. Puedes consultar en el ChatGPT qué hace cada uno. Considera un aspecto también importante: algunas funciones escritas por mí se cargan con `source_url` y `source`; dentro de algunas de dichas funciones, también se cargan paquetes adicionales.
+
+```{r}
+library(vegan)
+library(sf)
+library(tidyverse)
+library(tmap)
+library(kableExtra)
+library(broom)
+library(cluster)
+library(gclus)
+library(pvclust)
+library(foreach)
+library(leaps)
+library(caret)
+library(RColorBrewer)
+library(indicspecies)
+library(dendextend)
+library(adespatial)
+library(SpadeR)
+library(iNEXT)
+library(GGally)
+library(vegetarian)
+r <- 'R/'
+gh_content <- 'https://raw.githubusercontent.com/'
+gh_zonal_stats <- paste0(gh_content,
+                         'geofis/zonal-statistics/0b2e95aaee87bf326cf132d28f4bd15220bb4ec7/out/')
+repo_analisis <- 'biogeografia-master/scripts-de-analisis-BCI/master'
+repo_sem202202 <- 'biogeografia-202202/material-de-apoyo/master/practicas/'
+devtools::source_url(paste0(gh_content, repo_analisis, '/biodata/funciones.R'))
+devtools::source_url(paste0(gh_content, repo_sem202202, 'train.R'))
+devtools::source_url(paste0(gh_content, repo_sem202202, 'funciones.R'))
+fuentes_practica <- 'fuentes/practica-03/'
+source(paste0(r, 'funciones.R'))
+umbral_alfa <- 0.05
+```
+
+# Análisis exploratorio de datos (AED)
+
+## Cargar la matriz de comunidad
+
+```{r}
+mc <- read.csv(paste0(fuentes_practica, 'matriz-comunidad-', params$estudiante, '.csv'))[,-1]
+mc %>% estilo_kable(
+  titulo = 'Matriz de comunidad',
+  nombres_filas = T, alinear = 'r')
+```
+
+```{r}
+data.frame(Especies = sort(names(mc))) %>%
+  estilo_kable(titulo = 'Lista de especies', cubre_anchura = F, alinear = 'c') %>% 
+  column_spec(column = 1, width = "15em")
+```
+
+```{r}
+data.frame(`Número de sitios donde fue reportada la especie` = sort(colSums(mc), decreasing = T),
+           check.names = F) %>%
+  rownames_to_column('Especie') %>% 
+  estilo_kable(
+    titulo = 'Número de sitios en los que está presente cada especie (orden descendente por número de sitios)', 
+    nombres_filas = F, alinear = 'cr')
+```
+
+
+```{r}
+data.frame(`Riqueza por sitios` = rowSums(mc),
+           check.names = F) %>%  rownames_to_column('Sitio') %>% 
+  arrange(desc(`Riqueza por sitios`)) %>% 
+  estilo_kable(
+    titulo = 'Riqueza por sitios (orden descendente por riqueza)', 
+    nombres_filas = F, alinear = 'cr')
+```
+
+La matriz de comunidad analizada se compone de `r nrow(mc)` sitios y `r specnumber(colSums(mc))` especies, donde el/los sitio/s más ricos es/son `r vector_a_lista(rownames(mc)[specnumber(mc)==max(specnumber(mc))])`. La/s especie/s más común/es es/son `r vector_a_lista(names(mc)[colSums(mc)==max(colSums(mc))])` y la/s más rara/s es/son `r vector_a_lista(names(mc)[colSums(mc)==min(colSums(mc))])`. El siguiente gráfico de mosaicos muestra la distribución de las especies según sitios.
+
+
+```{r, fig.cap='Distribución de las especies según sitios'}
+grafico_mosaico <- crear_grafico_mosaico_de_mc(mc, tam_rotulo = 12) + xlab('Sitios') + ylab('Especie')
+grafico_mosaico
+```
+
+## Transformar la matriz de comunidad
+
+Este paso es importante, lo explico [aquí](https://www.youtube.com/watch?v=yQ10lp0-nHc&list=PLDcT2n8UzsCRDqjqSeqHI1wsiNOqpYmsJ&index=10)
+
+```{r}
+mc_t <- decostand(mc, 'hellinger') #Hellinger, funciona con datos de presencia/ausencia
+mc_t %>% estilo_kable(titulo = 'Matriz de comunidad transformada',
+                      nombres_filas = T, alinear = 'r')
+# Otras transformaciones posibles con datos de presencia/ausencia
+# mc_t <- decostand(mc, 'normalize') #Chord
+# mc_t <- decostand(log1p(mc), 'normalize') #Chord
+# mc_t <- decostand(mc, 'chi.square') #Chi-square
+```
+
+## Cargar la matriz ambiental
+
+```{r, message=F, warning=F}
+env <- read_csv(paste0(fuentes_practica, 'matriz-ambiental-', params$estudiante, '.csv'))[, -1]
+env %>% estilo_kable(titulo = 'Matriz ambiental', nombres_filas = T, alinear = 'r')
+```
+
+La matriz ambiental se compone de `r ncol(env)` variables de tipo numérico, conteniendo el valor de cada variable para cada uno de los `r nrow(env)` sitios. La siguiente tabla y el gráfico muestran un resumen de los estadísticos básicos de la matriz ambiental.
+
+
+```{r}
+estad_basicos <- env %>%
+  pivot_longer(everything(), names_to = "Variable", values_to = "Valor") %>%
+  group_by(Variable) %>%
+  summarise(
+    Media = mean(Valor),
+    Mediana = median(Valor),
+    `Desv. Estándar` = sd(Valor),
+    Varianza = var(Valor),
+    `Error Estándar` = sd(Valor) / sqrt(length(Valor)))
+estad_basicos %>% estilo_kable(titulo = 'Matriz ambiental', nombres_filas = F, alinear = 'crrrr')
+```
+
+
+
+```{r}
+env %>%
+  pivot_longer(everything(), names_to = 'Variable', values_to = 'Valor') %>% 
+  group_by(Variable) %>% 
+  ggplot() +
+  aes(x = Variable, y = Valor, color = Variable, fill = Variable) + 
+  # geom_boxplot(lwd = 0.2) + 
+  geom_violin(alpha = 0.2, width = 0.8, color = "transparent") +
+  geom_jitter(alpha = 0.6, size = 2, height = 0, width = 0.1) +
+  geom_boxplot(alpha = 0, width = 0.3, color = "#808080") +
+        scale_fill_brewer(palette = 'Set1') +
+        theme_bw() +
+        theme(legend.position="none")
+```
+
+Las medias calculadas de las variables `r vector_a_lista(colnames(env))` son, respectivamente, las siguientes: `r vector_a_lista(apply(env, 2, function(x) round(mean(x),2)))`. La variable que con la media más alta fue `r estad_basicos$Variable[which.max(estad_basicos$Media)]` (`r round(max(estad_basicos$Media), 2)`), y la más baja la obtuvo la variable `r estad_basicos$Variable[which.min(estad_basicos$Media)]` (`r round(min(estad_basicos$Media), 2)`). Por otra parte, la mitad de los sitios midieron menos de `r vector_a_lista(apply(env, 2, function(x) round(median(x),2)))`, para cada una de las variables `r vector_a_lista(estad_basicos$Variable)`, respectivamente. Finlamente, la variable con mayor dispersión fue `r estad_basicos$Variable[which.max(estad_basicos$Varianza)]` y la de menor dispersión fue `r estad_basicos$Variable[which.min(estad_basicos$Varianza)]`.
+
+Una verificación importante que debe realizarse es si las matrices de comunidad y ambiental tienen el mismo numero de filas y si las filas se encuentran en el mismo orden (e.g. consistencia entre matrices, donde cada fila en la matriz de comunidad se refiere al mismo sitio en la ambiental, y viceversa). Esto se puede comprobar por medio de los nombres de columnas y, en este caso, tras realizar la correspondiente comprobación, `r if(all(rownames(mc) == rownames(env))) '**esta condición se cumple, por lo que podemos continuar adelante con los siguientes análisis**' else '**esta condición no se cumple, por lo que deberíamos revisar la estructura de ambas matrices**'`
+
+A continuación, realizaré análisis de agrupamiento, ordenación y diversidad, basándome en las indicaciones de @borcard2018numerical, reaprovechando el código contenido en @jose_ramon_martinez_batlle_2020_4402362.
+
+# Análisis de agrupamiento
+
+A continuación, el **análisis de agrupamiento** propiamente. La parte más importante es generar un árbol, a partir de una matriz de distancias, que haga sentido desde el punto de vista de la comunidad y la distribución de las especies. Primero cargaré paquetes específicos de esta técnica y generaré la matriz de distancias.
+
+```{r}
+mc_d <- vegdist(mc_t, "euc")
+```
+
+## Generación de árboles
+
+A continuación, generaré árboles usando distintos métodos. Explico detalladamente estas técnicas en el [repo](https://github.com/biogeografia-master/scripts-de-analisis-BCI), y en los vídeos (13 a 16) de la lista mencionada arriba  ["Ecología Numérica con R" de mi canal](https://www.youtube.com/playlist?list=PLDcT2n8UzsCRDqjqSeqHI1wsiNOqpYmsJ).
+
+```{r, fig.width=9, fig.height=9, dpi=300}
+lista_cl <- list(
+        cl_single = hclust(mc_d, method = 'single'),
+        cl_complete = hclust(mc_d, method = 'complete'),
+        cl_upgma = hclust(mc_d, method = 'average'),
+        cl_ward = hclust(mc_d, method = 'ward.D2')
+)
+par(mfrow = c(2,2))
+invisible(map(names(lista_cl), function(x) plot(lista_cl[[x]], main = paste0(x, '\n(árbol de evaluación)'), hang = -1)))
+par(mfrow = c(1,1))
+```
+
+A continuación, **calcularé la distancia y la correlación cofenéticas; esta última, la correlación cofenética,se utiliza como criterio flexible para elegir el método de agrupamiento idóneo, pero no debe usarse de manera estricta**. Se supone que el método con la mayor correlación cofenética explica mejor el agrupamiento de la comunidad. Si quieres comprender mejor esta técnica, consulta el vídeo que te referí en el párrafo anterior, así como los libros de referencia. Normalmente, el método UPGMA obtiene la mayor correlación cofenética, pero esto se debe a que su procedimiento de obtención maximiza precisamente dicha métrica. No es recomendable conservar un único método de agrupamiento, normalmente es bueno usar al menos dos. Ward es muchas veces recomendado como método de contraste, por basarse en procedimientos de cálculo muy distintos a los de UPGMA.
+
+```{r}
+map_df(lista_cl, function(x) {
+        coph_d <- cophenetic(x)
+        corr <- cor(mc_d, coph_d)
+        return(corr)
+}) %>% t() %>% as.data.frame() %>%
+  rownames_to_column %>%
+  mutate(rowname = gsub('cl_', '', rowname)) %>% 
+  setNames(c('Método de agrupamiento', 'Correlación cofenética')) %>%
+  estilo_kable()
+```
+
+## Anchura de siluetas
+
+Ahora, calcularé **las anchuras de silueta, una métrica que ayuda a determinar en cuántos grupos se organiza la comunidad; las anchuras de silueta no deben usarse como método estricto, y sólo debe usarse de forma flexible para informarnos sobre el número máximo de grupos posibles**. Considera las siguientes reglas:
+
+  - El número ideal es 3 grupos, de 4 a 5 grupos es aceptable, 6 o más grupos se considera difícil de interpretar, o es un resultado poco útil; 1 grupo es un resultado sin sentido.
+  - Si obtienes distintos grupos, **pero uno o varios están compuestos por un único sitio, observa qué ocurre en ese sitio**, pues es probable que contenga especie raras sólo presentes en él. En este caso, es recomendable explorar dos alternativas para evitar el grupo formado por un único sitio: ver qué ocurre usando distintos métodos o elegir cortar el árbol en un número de grupos menor.
+
+### Anchuras de siluetas para método UPGMA
+
+```{r}
+# UPGMA
+anch_sil_upgma <- calcular_anchuras_siluetas(
+        mc_orig = mc, 
+        distancias = mc_d, 
+        cluster = lista_cl$cl_upgma)
+u_dend_reord <- reorder.hclust(lista_cl$cl_upgma, mc_d)
+plot(u_dend_reord, hang = -1, main = 'Método UPGMA\n(árbol de evaluación)')
+rect.hclust(
+        tree = u_dend_reord,
+        k = anch_sil_upgma$n_grupos_optimo)
+resultado_evaluacion_upgma <- evaluar_arbol(u_dend_reord, anch_sil_upgma$n_grupos_optimo)
+```
+
+Tras cortar el árbol, la evaluación practicada concluyó lo siguiente: **"`r resultado_evaluacion_upgma`"**
+
+### Anchuras de siluetas para método Ward
+
+```{r}
+# Ward
+anch_sil_ward <- calcular_anchuras_siluetas(
+        mc_orig = mc, 
+        distancias = mc_d, 
+        cluster = lista_cl$cl_ward)
+w_dend_reord <- reorder.hclust(lista_cl$cl_ward, mc_d)
+plot(w_dend_reord, hang = -1, main = 'Método Ward\n(árbol de evaluación)')
+rect.hclust(
+        tree = w_dend_reord,
+        k = anch_sil_ward$n_grupos_optimo)
+resultado_evaluacion_ward <- evaluar_arbol(w_dend_reord, anch_sil_ward$n_grupos_optimo)
+```
+
+Tras cortar el árbol, la evaluación practicada concluyó lo siguiente: "`r resultado_evaluacion_ward`".
+
+## Remuestreo por *bootstrap* multiescalar
+
+Una forma alterna de evaluar árboles consiste en usar el remuestreo por *bootstrap* multiescalar. No me interesa que profundices en ella, sólo presentártela como técnica probabilística para evaluar árboles generados por métodos determinísticos. La técnica es documentada en @borcard2018numerical, de la cual puedes un resumen en [este cuaderno](https://github.com/biogeografia-master/scripts-de-analisis-BCI/blob/master/aa_analisis_de_agrupamiento_2_intepretacion_resultados.md#evaluaci%C3%B3n-mediante-remuestreo-por-bootstrap-multiescalar) y en [este vídeo (minuto 51:33)](https://youtu.be/y1ZZh9ajT_U?list=PLDcT2n8UzsCRDqjqSeqHI1wsiNOqpYmsJ&t=3093). El remuestreo por *bootstrap* multiescalar valida la robustez de los análisis de agrupamiento tomando múltiples muestras aleatorias de los datos en diferentes tamaños. Este proceso determina qué grupos son consistentemente identificados como clústeres, generando valores de probabilidad aproximadamente insesgados (AU) que son considerados más fiables que las probabilidades de *bootstrap* tradicionales (BP). Esta técnica ayuda a identificar y confirmar patrones robustos en los datos.
+
+Lo aplicaré primero al árbol generado por el método UPGMA.
+
+```{r}
+# UPGMA
+# if(interactive()) dev.new()
+cl_pvclust_upgma <-
+        pvclust(t(mc_t),
+                method.hclust = "average",
+                method.dist = "euc",
+                iseed = 99, # Resultado reproducible
+                parallel = TRUE, quiet = TRUE)
+# Añadir los valores de p
+plot(cl_pvclust_upgma, hang = -1, main = 'Método UPGMA bootstrap\n(árbol de evaluación)')
+# Añadir rectángulos a los grupos significativos
+lines(cl_pvclust_upgma)
+pvrect(cl_pvclust_upgma, alpha = 0.90, border = 4)
+```
+
+Lo aplicaré también al árbol generado por el método Ward.
+
+```{r}
+# Ward
+# if(interactive()) dev.new()
+cl_pvclust_ward <-
+        pvclust(t(mc_t),
+                method.hclust = "ward.D2",
+                method.dist = "euc",
+                iseed = 99, # Resultado reproducible
+                parallel = TRUE, quiet = TRUE)
+# Añadir los valores de p
+plot(cl_pvclust_ward, hang = -1, main = 'Método Ward bootstrap\n(árbol de evaluación)')
+# Añadir rectángulos a los grupos significativos
+lines(cl_pvclust_ward)
+pvrect(cl_pvclust_ward, alpha = 0.91, border = 4)
+```
+
+## Conclusión sobre selección de método de agrupamiento y número de grupos
+
+Basado en lo anterior, elegiré un método de agrupamiento y un número de grupos, y lo exportaré a un archivo que posteriormente podré reaprovechar. La lógica empleada para elegir método de agrupamiento y número de grupos, es la siguiente: si el árbol generado por el método UPGMA no es recomendable (por tener grupos formados 2 o menos elementos), pero Ward sí, se usar el árbol generado por el método Ward y el número de grupos idóneo sugerido por la anchura de silueta. Si UPGMA es recomendable pero Ward no lo es, se usar el árbol generado por el método UPGMA, cortado en el número de grupos sugerido por la anchura de siluetas. Si ambos métodos son recomendables y sugieren el mismo número de grupos, se opta por el arbol generado por el método Ward. Si ambos métodos son recomendables pero sugieren un número diferente de grupos, se elige el método que sugiere menos grupos. Finalmente, si ambos métodos, UPGMA y Ward, resultan ser poco idóneos porque generan grupos muy pequeños (dos o menos elementos), se opta, como último recurso, por elegir el árbol generado por el método Ward cortado en 3 grupos.
+
+```{r}
+grupos_seleccionados <- seleccionar_y_cortar_arbol(
+  arbol_upgma = lista_cl$cl_upgma, arbol_ward = lista_cl$cl_ward,
+  resultado_evaluacion_upgma = resultado_evaluacion_upgma,
+  resultado_evaluacion_ward = resultado_evaluacion_ward)
+saveRDS(grupos_seleccionados$resultado,
+        paste0(fuentes_practica, 'grupos_seleccionados-', params$estudiante,'.RDS'))
+```
+
+**`r grupos_seleccionados$decision`**. El árbol resultante se muestra a continuación:
+
+
+```{r, fig.width=9, fig.height=4.5, dpi=300}
+# Convierte el hclust en dendrograma
+dend <- as.dendrogram(grupos_seleccionados$arbol)
+
+# Corta y colorea el dendrograma en k grupos
+dend_colored <- color_branches(dend, k=grupos_seleccionados$k)
+
+# Etiqueta los grupos
+labels_colors <- labels_colors(dend_colored)
+labels(dend_colored) <- paste0(labels(dend_colored), " (",
+                               grupos_seleccionados$resultado[grupos_seleccionados$arbol$order],
+                               ")")
+
+# Grafica el dendrograma
+# par(mar = c(3, 4, 4, 2) + 0.1) # Ajusta los márgenes
+plot(
+  dend_colored,
+  main=paste(
+    'Árbol seleccionado\nMétodo',
+    grupos_seleccionados$metodo,
+    'cortado en',
+    grupos_seleccionados$k, 'grupos'),
+  xlab = 'Sitios (grupo de pertenencia)')
+```
+
+
+## Grupos (clústers), variables ambientales
+
+Apliquemos el análisis de agrupamiento a la matriz ambiental. La clave en este punto es que, si la matriz ambiental presenta patrones parecidos a los de la matriz de comunidad, significa que el agrupamiento utilizado hace sentido entre ambos conjuntos de datos (comunidad y hábitat) de forma consistente. Si ambos conjuntos de datos son consistentes, significa que existe algún grado de asociación, aunque sea sólo una mera asociación estadística.
+
+Agrupar los sitios de muestreo de la matriz ambiental según los grupos previamente definidos.
+
+```{r}
+env_grupos <- env %>%
+    rownames_to_column('sitios_de_muestreo') %>% 
+    mutate(grupos = as.factor(grupos_seleccionados$resultado)) %>%
+    pivot_longer(-c(grupos, sitios_de_muestreo), names_to = "variable", values_to = "valor")
+```
+
+Evaluar efectos entre los grupos ("diferencias significativas"). Se utilizan las pruebas estadísticas ANOVA (evalúa homongeneidad de medias) y Kruskal-Wallis (evalúa homogeneidad de medianas). Las tablas están ordenadas en orden ascendente por la columna `p_valor_a`, que son los p-valores de la prueba ANOVA.
+
+```{r}
+env_grupos_ak <- env_grupos %>%
+  group_by(variable) %>%
+  summarise(
+    p_valor_a = tryCatch(oneway.test(valor ~ grupos)$p.value, error = function(e) NA),
+    p_valor_k = tryCatch(kruskal.test(valor ~ grupos)$p.value, error = function(e) NA)
+    ) %>%
+  arrange(p_valor_a)
+env_grupos_ak %>% estilo_kable(alinear = 'crr')
+```
+
+Explora tus resultados.
+
+```{r, fig.width=9, fig.height=4.5, dpi=300}
+env_grupos %>% 
+        group_by(variable) %>% 
+        ggplot() + aes(x = grupos, y = valor, group = grupos, fill = grupos) + 
+        geom_boxplot(lwd = 0.2) + 
+        scale_fill_brewer(palette = 'Set1') +
+        theme_bw() +
+        theme(legend.position="none") +
+        facet_wrap(~ variable, scales = 'free_y', ncol = 8)
+```
+
+El objetivo de adjuntarle, a la matriz ambiental, el vector de agrupamiento generado a partir de datos de comunidad, consiste en caracterizar ambientalmente los hábitats de los subgrupos diferenciados según su composición. Observa los resultados de las pruebas estadísticas, de los diagramas de caja, y explora tus resultados:
+
+## Especies con preferencia/fidelidad con grupos (clústers)
+
+
+Análisis de preferencia/fidelidad de especies con grupos (clusters), mediante el coeficiente de correlación biserial puntual (*phi*).
+
+```{r comment=""}
+set.seed(9999)
+phi <- multipatt(
+  mc,
+  grupos_seleccionados$resultado,
+  func = "r.g",
+  max.order = 1,
+  control = how(nperm = 999))
+summary(phi)
+```
+
+Tabla de especies que presentaron asociación con grupos por medio de *phi*, usando umbral de significancia (`umbral_alfa`).
+
+```{r}
+tabla_phi_sign <- phi$sign
+tabla_phi_sign_alfa <- tabla_phi_sign[phi$sign$p.value < umbral_alfa, ]
+data.frame(
+  `Nombre de especie` = rownames(tabla_phi_sign_alfa),
+  `P-valor` = tabla_phi_sign_alfa$p.value,
+  `Grupo de asociación` = gsub('s\\.', '', names(tabla_phi_sign_alfa)[tabla_phi_sign_alfa$index]),
+  check.names = F) %>%
+  arrange(`Nombre de especie`) %>% 
+  estilo_kable(alinear = 'crr')
+```
+
+# Técnicas de ordenación
+
+Me basaré en los scripts que comienzan por `to_` de este [repo](https://github.com/biogeografia-master/scripts-de-analisis-BCI), los cuales explico en los vídeos de "Técnicas de ordenación" de la lista de reproducción ["Ecología Numérica con R" de mi canal](https://www.youtube.com/playlist?list=PLDcT2n8UzsCRDqjqSeqHI1wsiNOqpYmsJ).
+
+## Ordenación no restringida
+
+### PCA aplicado a datos de comunidad transformados
+
+```{r comment="", fig.width=9, fig.height=6, dpi=300}
+pca_mc_t <- rda(mc_t)
+summary(pca_mc_t)
+screeplot(
+  pca_mc_t,
+  bstick = TRUE,
+  npcs = length(pca_mc_t$CA$eig)
+)
+# Biplot
+cleanplot.pca(pca_mc_t, scaling = 1, mar.percent = 0.06, cex.char1 = 0.7)
+```
+
+### Análisis de correspondencia (CA)
+
+```{r comment="", fig.width=9, fig.height=6, dpi=300}
+# Realizar el CA
+mc_ca <- cca(mc)
+```
+
+Resumen de análisis de correspondencia.
+
+```{r comment="", fig.width=9, fig.height=6, dpi=300}
+summary(mc_ca)
+```
+
+Gráfico de sedimentación o *screeplot*.
+
+```{r comment="", fig.width=9, fig.height=6, dpi=300}
+# Screeplot
+screeplot(mc_ca, bstick = TRUE, npcs = length(mc_ca$CA$eig))
+```
+
+Representación del *biplot*.
+
+
+```{r comment="", fig.width=9, fig.height=6, dpi=300}
+# Biplot
+plot(mc_ca,
+     scaling = 1,
+     main = "Análisis de correspondencia, escalamiento 1"
+)
+```
+
+## Ordenación restringida con modelización
+
+A continuación, el análisis de ordenación propiamente. La parte más importante es el entrenamiento: la función `train` del paquete `caret`, contenida en la función `my_train`, simplifica la selección de variables. Lo más importante: prueba con todas las variables primero, observa las variables que recomienda el modelo final (`print_my_train(mod)`) y ensaya varias combinaciones de subconjuntos de variables.
+
+```{r comment="", fig.width=9, fig.height=6, dpi=300}
+mc_t_ren <- mc_t %>%
+  rename_all(~ paste('ESPECIE', .x))
+env_spp <- env %>% bind_cols(mc_t_ren)
+spp <- paste0('`', grep('^ESPECIE', colnames(env_spp), value = T), '`', collapse = ' + ')
+my_formula <- as.formula(paste(spp, '~ .'))
+set.seed(1); mod <- my_train(
+  formula = my_formula, 
+  # preproceso = 'scale',
+  data = env_spp,
+  num_variables = 3:4)
+print_my_train(mod)
+(covar <- grep(
+  pattern = '\\(Intercept\\)',
+  x = names(coef(mod$finalModel,unlist(mod$bestTune))),
+  invert = T, value = T))
+rda_mc_t <- rda(mc_t_ren %>% rename_all(~ gsub('^ESPECIE ', '', .)) ~ .,
+                    env %>% select_at(all_of(gsub('\\`', '', covar))), scale = T)
+```
+
+A continuación, el resumen del análisis de redundancia.
+
+```{r comment="", fig.width=9, fig.height=6, dpi=300}
+summary(rda_mc_t)
+```
+
+La varianza ajustada explicada por el modelo.
+
+```{r comment="", fig.width=9, fig.height=6, dpi=300}
+RsquareAdj(rda_mc_t)$adj.r.squared
+```
+
+Y el factor de inflación de la varianza.
+
+```{r comment="", fig.width=9, fig.height=6, dpi=300}
+vif.cca(rda_mc_t)
+```
+
+Represento el gráfico *triplot*.
+
+```{r comment="", fig.width=9, fig.height=6, dpi=300}
+# Triplot
+escalado <- 1
+plot(rda_mc_t,
+     scaling = escalado,
+     display = c("sp", "lc", "cn"),
+     main = paste("Triplot de RDA especies ~ variables, escalamiento", escalado)
+)
+rda_mc_t_sc1 <- scores(rda_mc_t,
+         choices = 1:2,
+         scaling = escalado,
+         display = "sp"
+  )
+# text(mi_fam_t_rda, "species", col="red", cex=0.8, scaling=escalado)
+arrows(0, 0,
+       rda_mc_t_sc1[, 1] * 0.9,
+       rda_mc_t_sc1[, 2] * 0.9,
+       length = 0,
+       lty = 1,
+       col = "red"
+)
+```
+
+# Análisis de diversidad + análisis de agrupamiento abreviado
+
+Me basaré en los scripts que comienzan por `di_` de este [repo](https://github.com/biogeografia-master/scripts-de-analisis-BCI), los cuales explico en los vídeos de "Análisis de diversidad" (vídeos 19 y 20) de la lista de reproducción ["Ecología Numérica con R" de mi canal](https://www.youtube.com/playlist?list=PLDcT2n8UzsCRDqjqSeqHI1wsiNOqpYmsJ). Dichos vídeos tienen aplicaciones ligeramente diferentes, pues los datos fuente usados en ellos son de abundancia, mientras que los tuyos son de presencia/ausencia.
+
+```{r, include=F}
+options(stringsAsFactors = FALSE)
+```
+
+## Calcular riqueza (e índices)
+
+La principal desventaja de trabajar con registros de presencia, es que la mayoría de los índices de diversidad alpha fueron diseñados originalmente para calcularse a partir de datos de abundancia. Sin embargo, la riqueza de especies, que es el número $q=0$ de Hill ($=N_0$ en las columnas que produce la función `alpha_div`) es un buen proxy sobre la diversidad, y nos ayudará a comparar sitios.
+
+Además de la columna `N0` del objeto que generaré en el bloque siguiente, verás que la función `alpha_div` genera otras columnas; son índices pensados para datos de abundancia, que en este caso no usaremos, pero los muestro para que tengas una visión completa del análisis de diversidad con índices que podría serte de utilidad en el futuro.
+
+Por otra parte, afortunadamente, los métodos de estimación de riqueza de Chao, y los de diversidad beta (al final de esta sección), aprovechan sustancialmente los registros de presencia/ausencia para realizar estimaciones consistentes y fiables.
+
+> Una nota adicional. En el análisis de diversidad, es útil (no imprescindible) disponer de un análisis clúster (agrupamiento) básico. Este te servirá para comparar la riqueza observada y la esperada entre hábitats. Por esta razón, combinamos análisis de diversidad con agrupamiento. Sin embargo, si el análisis de agrupamiento generó grupos de dos o menos elementos, dicha comparación no será realizable.
+
+
+```{r}
+indices <- alpha_div(mc) %>% 
+  mutate(sitio = rownames(.)) %>% 
+  relocate(sitio, .before = everything())
+```
+
+El objeto `mc` es la matriz de comunidad de presecia/ausencia. La función `alpha_div` es un "envoltorio" generado por mí para calcular múltiples índices de diversidad y estimaciones, basada en las funciones de los paquetes `SpadeR` y `iNEXT`. Si usásemos datos de abundancia, los índices que calcula la función "alpha_div" serían útiles, pero con registros de presencia/ausencia, como es nuestro caso, sólo la columna N0 (riqueza) nos aportará algún resultado con sentido.
+
+```{r}
+indices %>% 
+  kable(booktabs=T) %>%
+  kable_styling(latex_options = c("HOLD_position", "scale_down")) %>%
+  gsub(' NA |NaN ', '', .) #Lista de especies
+```
+
+Los sitios ordenados en función de su riqueza:
+
+```{r}
+indices %>%
+  arrange(desc(N0)) %>% 
+  kable(booktabs=T) %>%
+  kable_styling(latex_options = c("HOLD_position", "scale_down")) %>%
+  gsub(' NA |NaN ', '', .) #Lista de especies
+```
+
+## Evaluar correlación entre riqueza y variables ambientales mediante matriz de correlación.
+
+En el bloque siguiente, represento gráficamente la correlación entre la riqueza y las variables ambientales mediante un panel de gráficos, que suele llamarse también "matriz de correlación", expresada gráficamente. Si usases índices de diversidad, como el de Shannon o los números de Hill, también deberías incluirlos en el gráfico; nota que en este ejemplo, sólo uso la riqueza (la función `select(N0)` se encarga de conservar sólo la riqueza). Esto es lo que debes saber sobre el panel:
+
+- Presta atención a la primera columna y la primera fila de la matriz, que muestra cómo se correlaciona `N0` con las variables ambientales que elijas. 
+
+- La diagonal contiene gráficos de línea que muestra la densidad de la variable en cuestión.
+
+- Los gráficos del "triángulo superior", y que contienen el patrón `Corr: ####`, muestran el valor del coeficiente de correlación de Pearson ($r$) entre las variables intersectadas. Si existe un $|r|$ elevado (es decir, si es muy cercano a -1 o a 1) y la prueba de producto-momento es significativa (si hay uno o varios asteriscos, o un punto, lo es), entonces toma nota de que dicha variable se asocia estadísticamente con la riqueza. Si $r$ es negativo, la relación es inversa (cuando aumenta la variable, disminuye la riqueza, y viceversa); si es positivo, la relación es directa (cuando aumenta la variable, aumenta también la riqueza).
+
+- En el "triángulo inferior", que es un espejo del superior, se sitúan los gráficos de dispersión de las variables intersectadas. Si los puntos siguen un patrón de distribución formando una elipse imaginaria (organizados en torno a una línea recta imaginaria inclinada), entonces existe correlación.
+
+```{r, out.width='100%'}
+bind_cols(indices %>% select(N0), env %>%
+            rename_with(.fn = ~ paste0('AMB_', .))) %>%
+  ggpairs(
+    labeller = label_wrap_gen(width=10),
+    upper = list(continuous = wrap("cor", size = 3))) +
+  theme(text = element_text(size = 10))
+```
+
+## "Completitud de muestra" y curva de acumulación
+
+"Completitud", en porcentajes, según distintos estimadores. Con un 80% de completitud, se considera en general una muestra representativa. Sin embargo, este umbral de 80% no debe tomarse de forma estricta. Sobre todo porque existen métodos refinados que mejoran las estimaciones
+
+```{r}
+riqueza_estimaciones <- data.frame(specpool(mc) %>% select(-matches('.se$'))) %>% 
+  select(`Riqueza observada` = Species,
+         `Número de sitios` = n,
+         `Estimación por Chao (clásico)` = chao,
+         `Estimación por jackknife de primer orden` = jack1,
+         `Estimación por jackknife de segundo orden` = jack2,
+         `Estimación por bootstrap` = boot) %>% 
+  pivot_longer(cols = everything(), names_to = 'Variable', values_to = 'Valor') %>%
+  mutate(`Cobertura (%)` = Valor / (filter(., Variable == "Riqueza observada") %>% pull(Valor)) * 100) %>% 
+  mutate(`Cobertura (%)` = ifelse(Variable %in% c('Riqueza observada', 'Número de sitios'), NA, `Cobertura (%)`))
+riqueza_estimaciones %>% estilo_kable(alinear = 'lrr')
+```
+
+
+
+```{r, eval=F}
+# Bug no resuelto:
+# Error in if (var_mle > 0) { : valor ausente donde TRUE/FALSE es necesario
+# Varios intentos frustrados por lograr que funcione. Entiendo que el problema
+# está en el número de doubletons (la matriz no tiene), pero no logré mejorar
+# la función interna SpecInciHomo para solucionarlo. La versión de SpadeR usada
+# en la aplicación Shiny https://chao.shinyapps.io/SpadeR/, no es la misma que 
+# la que se encuentra en GitHub ni en el CRAN, pues esa no tiene bug.
+df_spader <- data.frame(V1 = as.integer(c(nrow(mc), colSums(mc))))
+# También se puede crear con esta línea:
+# df_spader <- structure(
+#   list(V1 = c(15, 8, 9, 10, 9, 8, 9, 9, 8, 8, 6, 12, 9)),
+#   class = "data.frame", row.names = c(NA, -13L))
+df_spader
+#  V1
+#  15
+#   8
+#   9
+#  10
+#   9
+#   8
+#   9
+#   9
+#   8
+#   8
+#   6
+#  12
+#   9
+ChaoSpecies(df_spader, datatype = 'incidence_freq',
+            k = min(df_spader$V1), conf=0.95)
+# Error in if (var_mle > 0) { : valor ausente donde TRUE/FALSE es necesario
+# ENG: Error in if (var_mle > 0) { : missing value where TRUE/FALSE needed
+```
+
+Graficaré la curva de acumulación de especies.
+
+```{r, out.width='100%', out.height='80%', dpi=150}
+mc_general <- mc %>%
+  summarise_all(sum) %>%
+  mutate(N = nrow(mc)) %>%
+  relocate(N, .before = 1) %>%
+  data.frame
+nasin_raref <- iNEXT::iNEXT(
+  x = t(mc_general),
+  q=0,
+  knots = 2000,
+  datatype = 'incidence_freq')
+acumulacion_especies <- iNEXT::ggiNEXT(nasin_raref, type=1) +
+  theme_bw() +
+  theme(
+    text = element_text(size = 20),
+    panel.background = element_rect(fill = 'white', colour = 'black'),
+    panel.grid.major = element_line(colour = "grey", linetype = "dashed", size = 0.25)
+  ) +
+  ylab('Riqueza de especies') +
+  xlab('Número de sitios') +
+  scale_y_continuous(breaks = seq(0, 80, length.out = 9)) +
+  scale_color_manual(values = brewer.pal(8, 'Set2')) +
+  scale_fill_manual(values = brewer.pal(8, 'Set2'))
+acumulacion_especies
+```
+
+Ahora según los grupos previamente seleccionados en el análisis de agrupamiento.
+
+```{r, out.width='100%', out.height='80%', dpi=150}
+grupos_seleccionados <- readRDS(paste0(
+  fuentes_practica, 'grupos_seleccionados-',
+  params$estudiante, '.RDS'))
+mc_grupos <- mc %>%
+  mutate(g = grupos_seleccionados) %>%
+  group_by(g) %>%
+  summarise_all(sum) %>%
+  select(-g) %>% 
+  mutate(N = nrow(mc)) %>% 
+  relocate(N, .before = 1) %>% 
+  data.frame
+nasin_raref_general <- iNEXT::iNEXT(
+  x = t(mc_grupos),
+  q=0,
+  knots = 400,
+  datatype = 'incidence_freq')
+acumulacion_especies_grupos <- iNEXT::ggiNEXT(nasin_raref_general, type=1) +
+  theme_bw() +
+  theme(
+    text = element_text(size = 20),
+    panel.background = element_rect(fill = 'white', colour = 'black'),
+    panel.grid.major = element_line(colour = "grey", linetype = "dashed", size = 0.25)
+  ) +
+  ylab('Riqueza de especies') +
+  xlab('Número de sitios') +
+  scale_y_continuous(breaks = seq(0, 80, length.out = 9)) +
+  scale_color_manual(values = brewer.pal(8, 'Set2')) +
+  scale_fill_manual(values = brewer.pal(8, 'Set2'))
+acumulacion_especies_grupos
+```
+
+## Contribución de especies a la diversidad beta (SCBD, species contribution to beta diversity) y contribución local a la diversidad beta (LCBD local contribution to beta diversity)
+
+
+```{r}
+determinar_contrib_local_y_especie(
+    mc = mc,
+    alpha = 0.05,
+    nperm = 9999,
+    metodo = 'sorensen')
+```
+
+
+
+# Referencias
+
