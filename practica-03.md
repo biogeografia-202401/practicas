@@ -1,4 +1,4 @@
-Practica 3. Tércnicas de ecología numérica, reproducibilidad, redacción,
+Practica 3. Técnicas de ecología numérica, reproducibilidad, redacción,
 estilos de formato, tablas, citas y referencias
 ================
 <b>José-Ramón Martínez-Batlle</b> (<jmartinez19@uasd.edu.do>) <br>
@@ -7,9 +7,9 @@ Santo Domingo, República Dominicana
 
 <!-- README.md se genera a partir de README.Rmd. Por favor, edita ese archivo. -->
 
-# Practica 3. Tércnicas de ecología numérica, reproducibilidad, redacción, estilos de formato, tablas, citas y referencias
+# Practica 3. Técnicas de ecología numérica, reproducibilidad, redacción, estilos de formato, tablas, citas y referencias
 
-> Entrega: 27 de febrero, 16:00 horas.
+> Entrega: 5 de marzo, 16:00 horas.
 
 > Entrega tu archivo vía correo electrónico en formato nativo. Si como
 > procesador de texto, usaste software de interfaz gráfica de usuario

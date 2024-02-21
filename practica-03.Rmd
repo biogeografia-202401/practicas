@@ -1,5 +1,5 @@
 ---
-title: Practica 3. Tércnicas de ecología numérica, reproducibilidad, redacción, estilos de formato, tablas, citas y referencias
+title: Practica 3. Técnicas de ecología numérica, reproducibilidad, redacción, estilos de formato, tablas, citas y referencias
 author: <b>José-Ramón Martínez-Batlle</b> (jmartinez19@uasd.edu.do) <br> Facultad de Ciencias, Universidad Autónoma de Santo Domingo (UASD) <br> Santo Domingo, República Dominicana
 bibliography: references.bib
 csl: apa-es.csl
@@ -37,9 +37,9 @@ estilo_kable <- function(df, titulo = '', cubre_anchura = T) {
 }
 ```
 
-# Practica 3. Tércnicas de ecología numérica, reproducibilidad, redacción, estilos de formato, tablas, citas y referencias
+# Practica 3. Técnicas de ecología numérica, reproducibilidad, redacción, estilos de formato, tablas, citas y referencias
 
-> Entrega: 27 de febrero, 16:00 horas.
+> Entrega: 5 de marzo, 16:00 horas.
 
 > Entrega tu archivo vía correo electrónico en formato nativo. Si como procesador de texto, usaste software de interfaz gráfica de usuario (GUI), como Microsoft Word o LibreOffice Writer, entrega tanto el archivo nativo .docx o .odt como el PDF. Si usaste procesadores de texto sin GUI, como LaTeX, Overleaf, RMmarkdown, entrega tanto el PDF como la carpeta (comprimida en ZIP) conteniendo los archivos necesarios para compilar el PDF.
 
@@ -125,7 +125,7 @@ for (res in resultados) {
 ```
 
 
-```{r, echo=F, include=F}
+```{r, echo=F, include=F, eval=tejer_informes, message=F, warning=F}
 # for (i in nombres_ajustados[1]) {
 for (i in nombres_ajustados) {
   nombre_salida <- paste0(fuentes_practica, "informe-", i, ".html")
