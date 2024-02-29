@@ -184,19 +184,19 @@ documento.**
     suplementaria. Asegúrate de ser claro/a y conciso/a en tu redacción.
 
 3.  **Formato:** En cuanto a la forma, tal como te comenté arriba,
-    redacta el texto entregable aplicando lo aprendido en la
-    [“Practica 2. Métricas básicas de ecología numérica,
-    reproducibilidad, redacción, estilos de formato, tablas, citas y
-    referencias”](https://github.com/biogeografia-202302/practicas/blob/main/practica-02.md).
-    Considera usar una plantilla de estilos, para lo cual, te dejo estas
-    recomendaciones también:
+    redacta el texto entregable aplicando lo contenido en tu informe
+    asignado, así como siguiendo normas de redacción (como las
+    contenidas en este mandato), uso de estilos de formato, tablas,
+    citas y referencias. Considera usar una plantilla de estilos, para
+    lo cual, te dejo estas recomendaciones también:
 
     - Si usas Microsoft Word o LibreOffice Writer, puedes buscar
       plantillas de artículos (puedes usar las de algunas editoriales) o
       usar [esta plantilla](data/plantilla-manuscrito.dotx) si la
       consideras útil.
     - Independientemente de la plantilla o el software que elijas, lo
-      importante es que apliques lo aprendido en la práctica 2.
+      importante es que apliques lo aprendido sobre estilos de formato,
+      referencias cruzadas, uso de bibliografía.
 
 Si vas a usar la plantilla facilitada por mí, te doy algunos consejos:
 
