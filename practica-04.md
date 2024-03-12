@@ -10,7 +10,7 @@ Santo Domingo, República Dominicana
 
 # Generales
 
-> Fecha de entrega: 19 de marzo, 16 horas.
+> Fecha de entrega: 26 de marzo, 16 horas.
 
 > **Entregable:** Un documento explicando el proceso y mostrando los
 > resultados, de la extensión que prefieras, pero que no sea excesiva

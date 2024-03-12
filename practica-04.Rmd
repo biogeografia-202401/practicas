@@ -38,7 +38,7 @@ estilo_kable <- function(df, titulo = '', cubre_anchura = T) {
 
 # Generales
 
-> Fecha de entrega: 19 de marzo, 16 horas.
+> Fecha de entrega: 26 de marzo, 16 horas.
 
 > **Entregable:** Un documento explicando el proceso y mostrando los resultados, de la extensión que prefieras, pero que no sea excesiva (considera un límite bueno unas 5 páginas máximo), donde se apliquen estilos adecuadamente (título, título 1, cuerpo de texto, pie de figura, y cualquier otro), se inserten figuras, pies de figuras, referencia cruzada a figuras, referencias bibliográficas. Entrega tu práctica en archivo(s) en formato nativo (editable) del programa que hayas usado y, opcionalmente, en formato PDF. Por ejemplo, si trabajaste tu documento en Microsoft Word, envía el correspondiente archivo .docx o .doc. Si lo hiciste en LibreOffice Writer, envía el archivo .odt o el que corresponda, pero que sea nativo y editable. Si trabajaste en LaTeX, envía el archivo .tex y los asociados a éste.
 
