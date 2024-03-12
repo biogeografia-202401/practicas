@@ -9,7 +9,7 @@ Santo Domingo, República Dominicana
 
 # Practica 3. Técnicas de ecología numérica, reproducibilidad, redacción, estilos de formato, tablas, citas y referencias
 
-> Entrega: 5 de marzo, 16:00 horas.
+> Entrega: 19 de marzo, 16:00 horas.
 
 > Entrega tu archivo vía correo electrónico en formato nativo. Si como
 > procesador de texto, usaste software de interfaz gráfica de usuario
