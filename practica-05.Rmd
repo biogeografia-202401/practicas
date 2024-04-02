@@ -1,0 +1,89 @@
+---
+title: Práctica 5. Recojamos datos, formulemos preguntas
+author: <b>José-Ramón Martínez-Batlle</b> (jmartinez19@uasd.edu.do) <br> Facultad de Ciencias, Universidad Autónoma de Santo Domingo (UASD) <br> Santo Domingo, República Dominicana
+bibliography: references.bib
+csl: apa-es.csl
+lang: es
+output: github_document
+editor_options: 
+  chunk_output_type: console
+always_allow_html: true
+---
+
+<!-- README.md se genera a partir de README.Rmd. Por favor, edita ese archivo. -->
+
+```{r, echo=F, include=F}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  out.width = '80%',
+  dpi = 300,
+  fig.align = "center"
+  )
+options(digits = 3)
+options(knitr.duplicate.label = "allow")
+library(tidyverse)
+library(kableExtra)
+options(knitr.kable.NA = '')
+estilo_kable <- function(df, titulo = '', cubre_anchura = T) {
+  df %>% kable(format = 'html', escape = F, booktabs = T,
+               digits = 2, caption = titulo) %>%
+    kable_styling(bootstrap_options = c("hover", "condensed"),
+                  full_width = cubre_anchura, position = "center")
+}
+```
+
+------------------------------------------------------------------------
+
+# Generales
+
+> Fecha de entrega: en aula.
+
+> Se trabajará por grupos de dos personas, **pero la entrega es individual**.
+
+> **Entregar por correo electrónico, lo siguiente:**
+
+  - Cada estudiante entregará una hoja de cálculo o una lista en formato valores separados por delimitador (por ejemplo, un CSV), o incluso un correo electrónico, con las mediciones de ancho y largo, en sistema métrico (milímetros, centímetros), de 20 hojas de una misma especie de árbol (hojas simples, no compuestas), seleccionadas al azar de un mismo individuo, de las cuales 10 serán colectadas por ti, y otras 10 serán colectadas por tu compañero/a.
+  
+  - Cada miembro del grupo entregará una lista de tres preguntas que se podrían responder con los datos generados.
+
+------------------------------------------------------------------------
+
+# Ejercicio 1. Mide el largo y el ancho de 20 hojas
+
+- En el campus, preferiblemente cerca del edificio FC, cada grupo de 2 personas localizará un individuo de una especie de árbol o arbusto de hojas simples, que estén al alcance de la mano. Ponte de acuerdo con tu compañero/a para elegir el individuo, ya que ambas personas trabajarán sobre el mismo.
+
+- Siempre que te sea posible determina, con tu compañero/a, la especie a la que pertenece; en caso contrario, por lo menos toma una foto de conjunto del individuo.
+
+- Corta 10 hojas del árbol elegido; tu compañero/a debe hacer lo mismo, cortar 10, pero **no se deben mezclar**. Llévalas al aula. 
+
+- Si puedes (sólo si ves que tienes espacio para ello y recursos a mano), identifica cada hoja con un identificador único, o colócalas en orden del 1 al 10 (si lo haces colocándolas en orden, no las mezcles hasta finalizar la práctica, es decir, hasta que tu compañero/a también mida)
+
+- Mide ancho y largo de las hojas que colectaste. Guíate de referencias para que identifiques con certeza el desde y hasta dónde medir (de base a ápice para el largo, y máximo valor de margen a margen para el ancho). **Especifica la unidad de medida**. Atento al instrumento de medir, para que no confundas pulgadas con centímetros.
+
+- Mide ancho y largo de las hojas de tu compañero/a. Al finalizar, deberías tener 20 mediciones, organizadas en un tabla como esta:
+
+```{r, echo=F}
+set.seed(99)
+df <- data.frame(
+  `ID de hoja` = rep(1:10, 2),
+  `Nombre de estudiante` = c(rep('Monesvol', 10), rep('Thor', 10)),
+  `Ancho` = rnorm(20, 5, 0.3),
+  `Largo` = rnorm(20, 8, 0.5))
+knitr::kable(df)
+```
+
+
+# Ejercicio 2. Formula tres preguntas 
+
+Formula tres preguntas que entiendas se pueden responder con los datos colectados.
+
+
+
+## Criterios de evaluación y escala de valoración
+
+
+
+
+## Referencias
