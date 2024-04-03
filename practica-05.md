@@ -6,9 +6,11 @@ Santo Domingo, República Dominicana
 
 <!-- README.md se genera a partir de README.Rmd. Por favor, edita ese archivo. -->
 
+# Práctica 5. Recojamos datos, formulemos preguntas
+
 ------------------------------------------------------------------------
 
-# Generales
+## Generales
 
 > Fecha de entrega: en aula.
 
@@ -17,57 +19,58 @@ Santo Domingo, República Dominicana
 
 > **Entregar por correo electrónico, lo siguiente:**
 
-- Cada estudiante entregará una hoja de cálculo o una lista en formato
-  valores separados por delimitador (por ejemplo, un CSV), o incluso un
-  correo electrónico, con las mediciones de ancho y largo, en sistema
-  métrico (milímetros, centímetros), de 20 hojas de una misma especie de
-  árbol (hojas simples, no compuestas), seleccionadas al azar de un
-  mismo individuo, de las cuales 10 serán colectadas por ti, y otras 10
-  serán colectadas por tu compañero/a.
+-   Cada estudiante entregará una hoja de cálculo o una lista en formato
+    valores separados por delimitador (por ejemplo, un CSV), o incluso
+    un correo electrónico, con las mediciones de ancho y largo, en
+    sistema métrico (milímetros, centímetros), de 20 hojas de una misma
+    especie de árbol (hojas simples, no compuestas), seleccionadas al
+    azar de un mismo individuo, de las cuales 10 serán colectadas por
+    ti, y otras 10 serán colectadas por tu compañero/a.
 
-- Cada miembro del grupo entregará una lista de tres preguntas que se
-  podrían responder con los datos generados.
+-   Cada miembro del grupo entregará una lista de tres preguntas que se
+    podrían responder con los datos generados.
 
 ------------------------------------------------------------------------
 
-# Ejercicio 1. Mide el largo y el ancho de 20 hojas
+## Ejercicio 1. Mide el largo y el ancho de 20 hojas
 
-- En el campus, preferiblemente cerca del edificio FC, cada grupo de 2
-  personas localizará un individuo de una especie de árbol o arbusto de
-  hojas simples, que estén al alcance de la mano. Ponte de acuerdo con
-  tu compañero/a para elegir el individuo, ya que ambas personas
-  trabajarán sobre el mismo.
+-   En el campus, preferiblemente cerca del edificio FC, cada grupo de 2
+    personas localizará un individuo de una especie de árbol o arbusto
+    de hojas simples, que estén al alcance de la mano. Ponte de acuerdo
+    con tu compañero/a para elegir el individuo, ya que ambas personas
+    trabajarán sobre el mismo.
 
-- Siempre que te sea posible determina, con tu compañero/a, la especie a
-  la que pertenece; en caso contrario, por lo menos toma una foto de
-  conjunto del individuo.
+-   Siempre que te sea posible determina, con tu compañero/a, la especie
+    a la que pertenece; en caso contrario, por lo menos toma una foto de
+    conjunto del individuo.
 
-- Corta 10 hojas del árbol elegido; tu compañero/a debe hacer lo mismo,
-  cortar 10, pero **no se deben mezclar**. Llévalas al aula.
+-   Corta 10 hojas del árbol elegido; tu compañero/a debe hacer lo
+    mismo, cortar 10, pero **no se deben mezclar**. Llévalas al aula.
 
-- Si puedes (sólo si ves que tienes espacio para ello y recursos a
-  mano), identifica cada hoja con un identificador único, o colócalas en
-  orden del 1 al 10 (si lo haces colocándolas en orden, no las mezcles
-  hasta finalizar la práctica, es decir, hasta que tu compañero/a
-  también mida)
+-   Si puedes (sólo si ves que tienes espacio para ello y recursos a
+    mano), identifica cada hoja con un identificador único, o colócalas
+    en orden del 1 al 10 (si lo haces colocándolas en orden, no las
+    mezcles hasta finalizar la práctica, es decir, hasta que tu
+    compañero/a también mida)
 
-- Mide ancho y largo de las hojas que colectaste. Guíate de referencias
-  para que identifiques con certeza el desde y hasta dónde medir (de
-  base a ápice para el largo, y máximo valor de margen a margen para el
-  ancho). **Especifica la unidad de medida**. Atento al instrumento de
-  medir, para que no confundas pulgadas con centímetros.
+-   Mide ancho y largo de las hojas que colectaste. Guíate de
+    referencias para que identifiques con certeza el desde y hasta dónde
+    medir (de base a ápice para el largo, y máximo valor de margen a
+    margen para el ancho). **Especifica la unidad de medida**. Atento al
+    instrumento de medir, para que no confundas pulgadas con
+    centímetros.
 
-- Mide ancho y largo de las hojas de tu compañero/a. Al finalizar,
-  deberías tener 20 mediciones, organizadas en un tabla como esta:
+-   Mide ancho y largo de las hojas de tu compañero/a. Al finalizar,
+    deberías tener 20 mediciones, organizadas en un tabla como esta:
 
 <table>
 <thead>
 <tr>
 <th style="text-align:right;">
-ID.de.hoja
+ID de hoja
 </th>
 <th style="text-align:left;">
-Nombre.de.estudiante
+Nombre de estudiante
 </th>
 <th style="text-align:right;">
 Ancho
@@ -361,11 +364,78 @@ Thor
 </tbody>
 </table>
 
-# Ejercicio 2. Formula tres preguntas
+## Ejercicio 2. Formula tres preguntas
 
-Formula tres preguntas que entiendas se pueden responder con los datos
-colectados.
+-   Formula tres preguntas que entiendas se pueden responder con los
+    datos colectados.
 
 ## Criterios de evaluación y escala de valoración
+
+| Criterio                       | Nivel 1 (En Desarrollo)                                                                  | Nivel 2 (Aceptable)                                                                           | Nivel 3 (Bueno)                                                         | Nivel 4 (Excelente)                                                                                               |
+|--------------------------------|------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|-------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|
+| **Recolección de Datos**       |                                                                                          |                                                                                               |                                                                         |                                                                                                                   |
+| Exactitud en las mediciones    | Mediciones imprecisas, con errores significativos o sin especificar la unidad de medida. | Mediciones con pequeños errores o inconsistencias leves en la unidad de medida.               | Mediciones mayormente precisas y consistentes en la unidad de medida.   | Mediciones completamente precisas y consistentemente en la unidad de medida adecuada.                             |
+| Identificación de las hojas    | Identificación inexistente o incorrecta de las hojas.                                    | Identificación básica de las hojas con errores menores.                                       | Identificación correcta de la mayoría de las hojas.                     | Identificación precisa y detallada de todas las hojas.                                                            |
+| Organización de la información | Datos desorganizados o mal presentados en la tabla.                                      | Datos presentados en la tabla con alguna desorganización o falta de claridad.                 | Datos bien organizados y presentados claramente en la tabla.            | Datos excepcionalmente bien organizados y presentados de manera clara y profesional en la tabla.                  |
+| **Formulación de Preguntas**   |                                                                                          |                                                                                               |                                                                         |                                                                                                                   |
+| Relevancia de las preguntas    | Preguntas no relacionadas con los datos recolectados o irrelevantes para el estudio.     | Preguntas algo relacionadas con los datos, pero con poca relevancia para el estudio.          | Preguntas bien relacionadas con los datos y relevantes para el estudio. | Preguntas altamente relevantes y profundamente conectadas con los datos recolectados y los objetivos del estudio. |
+| Claridad y formulación         | Preguntas formuladas de manera confusa o incomprensible.                                 | Preguntas formuladas de manera aceptable, pero con algunos problemas de claridad o precisión. | Preguntas claras y bien formuladas, con una buena estructura.           | Preguntas excepcionalmente claras, precisas y bien estructuradas, mostrando un entendimiento profundo del tema.   |
+| Potencial analítico            | Preguntas con poco o ningún potencial para análisis significativo.                       | Preguntas con potencial limitado para análisis significativo.                                 | Preguntas que invitan a un análisis detallado y significativo.          | Preguntas que promueven un análisis exhaustivo y profundo, evidenciando un entendimiento avanzado del tema.       |
+
+<!-- ## Preguntas guía: -->
+<!-- ### Tali: -->
+<!-- - ¿Cuánto mide, en promedio (media, mediana), el ancho de la hoja del individuo seleccionado? -->
+<!-- - ¿Cuánto mide, en promedio (media, mediana), el largo de la hoja del individuo seleccionado? -->
+<!-- - ¿La muestra de la persona 1 del grupo es representativa de la muestra completa del grupo? -->
+<!-- - ¿Existen diferencias en la dispersión del ancho entre las mediciones realizadas por distintas personas? -->
+<!-- - ¿Existen diferencias en la dispersión del largo entre las mediciones realizadas por distintas personas? -->
+<!-- - ¿Existen diferencias en la dispersión del ancho entre las colectas realizadas por distintas personas? -->
+<!-- - ¿Existen diferencias en la dispersión del largo entre las colectas realizadas por distintas personas? -->
+<!-- - ¿Existe sesgo de medición entre distintas personas? -->
+<!-- - ¿Existe sesgo de colecta entre distintas personas? -->
+<!-- - ¿Existen diferencias significativas en las mediciones de ancho entre especies? -->
+<!-- - ¿Existen diferencias significativas en las mediciones de largo entre especies? -->
+<!-- - ¿Existen diferencias significativas entre las mediciones de largo y ancho? -->
+<!-- - ¿Provienen las mediciones del ancho de una población normalmente distribuida? -->
+<!-- - ¿Provienen las mediciones del largo de una población normalmente distribuida? -->
+<!-- - Si se pierden datos u hojas, ¿podemos tomar medidas para rellenarlos? ¿Qué medidas? -->
+<!-- - ¿Existen datos inconsistentes entre largo y ancho? -->
+<!-- ### Melany y María Fernanda -->
+<!-- - ¿Cuál es la media aritmética del ancho de las hojas? -->
+<!-- - ¿Cuál es la media aritmética del largo de las hojas? -->
+<!-- - ¿El ancho de las hojas posee correlación con el largo de las hojas? -->
+<!-- ### Angélica -->
+<!-- - ¿Qué probabilidad hay de que las hojas tengan el mismo largo? -->
+<!-- - ¿ Qué tanto puede dificultar el enves al momento de tomar las medidas? -->
+<!-- - ¿ Qué probabilidad hay e que las hojas posean el mismo ancho? -->
+<!-- ### Harly -->
+<!-- - Sacar promedio de ancho? -->
+<!-- - El color y el tamaño esta relacionado? -->
+<!-- - Cuál es promedio relativo de la altura? -->
+<!-- ### Gabriel -->
+<!-- - Habría alguna diferencia en la medida de la hoja si se mide por el envés? -->
+<!-- - Por qué un individuo tiene hojas de diferentes colores y otro con hojas del mismo color? -->
+<!-- - Las hojas de las plantas tienen alguna lógica matemática para su crecimiento, tienen un numero limite de cm de crecimiento? -->
+<!-- ### Luis -->
+<!-- - QUE PROBABILIDAD HAY QUE HOJA ESTE TORCIDA? -->
+<!-- - CUAL ES LA PROBALIDAD QUE LAS HOJAS TENGAN EL MISMO TAMAÑO? -->
+<!-- - CUAL ES LA PROBALIDAD QUE LAS HOJAS PASEN DE 20 CM? -->
+
+## Análisis
+
+``` r
+library(readxl)
+library(tidyverse)
+datos <- read_excel('data/mediciones-hojas.xlsx')
+
+estadisticos_por_grupo <- datos %>% 
+  pivot_longer(
+    cols = -(individuo:estudiante),
+    names_to = 'dimensión', values_to = 'valor') %>% 
+  group_by(individuo, dimensión) %>% 
+  summarise(Media = mean(valor),
+            Mediana = median(valor),
+            `Desv. Est.` = sd(valor))
+```
 
 ## Referencias
