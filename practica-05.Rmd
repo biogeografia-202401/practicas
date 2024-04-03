@@ -97,100 +97,101 @@ knitr::kable(df)
 | Potencial analítico            | Preguntas con poco o ningún potencial para análisis significativo. | Preguntas con potencial limitado para análisis significativo. | Preguntas que invitan a un análisis detallado y significativo. | Preguntas que promueven un análisis exhaustivo y profundo, evidenciando un entendimiento avanzado del tema. |
 
 
-<!-- ## Preguntas guía: -->
+## Preguntas guía
 
-<!-- ### Tali: -->
+### Tali:
 
-<!-- - ¿Cuánto mide, en promedio (media, mediana), el ancho de la hoja del individuo seleccionado? -->
+- ¿Cuánto mide, en promedio (media, mediana), el ancho de la hoja del individuo seleccionado?
 
-<!-- - ¿Cuánto mide, en promedio (media, mediana), el largo de la hoja del individuo seleccionado? -->
+- ¿Cuánto mide, en promedio (media, mediana), el largo de la hoja del individuo seleccionado?
 
-<!-- - ¿La muestra de la persona 1 del grupo es representativa de la muestra completa del grupo? -->
+- ¿La muestra de la persona 1 del grupo es representativa de la muestra completa del grupo?
 
-<!-- - ¿Existen diferencias en la dispersión del ancho entre las mediciones realizadas por distintas personas? -->
+- ¿Existen diferencias en la dispersión del ancho entre las mediciones realizadas por distintas personas?
 
-<!-- - ¿Existen diferencias en la dispersión del largo entre las mediciones realizadas por distintas personas? -->
+- ¿Existen diferencias en la dispersión del largo entre las mediciones realizadas por distintas personas?
 
-<!-- - ¿Existen diferencias en la dispersión del ancho entre las colectas realizadas por distintas personas? -->
+- ¿Existen diferencias en la dispersión del ancho entre las colectas realizadas por distintas personas?
 
-<!-- - ¿Existen diferencias en la dispersión del largo entre las colectas realizadas por distintas personas? -->
+- ¿Existen diferencias en la dispersión del largo entre las colectas realizadas por distintas personas?
 
-<!-- - ¿Existe sesgo de medición entre distintas personas? -->
+- ¿Existe sesgo de medición entre distintas personas?
 
-<!-- - ¿Existe sesgo de colecta entre distintas personas? -->
+- ¿Existe sesgo de colecta entre distintas personas?
 
-<!-- - ¿Existen diferencias significativas en las mediciones de ancho entre especies? -->
+- ¿Existen diferencias significativas en las mediciones de ancho entre especies?
 
-<!-- - ¿Existen diferencias significativas en las mediciones de largo entre especies? -->
+- ¿Existen diferencias significativas en las mediciones de largo entre especies?
 
-<!-- - ¿Existen diferencias significativas entre las mediciones de largo y ancho? -->
+- ¿Existen diferencias significativas entre las mediciones de largo y ancho?
 
-<!-- - ¿Provienen las mediciones del ancho de una población normalmente distribuida? -->
+- ¿Provienen las mediciones del ancho de una población normalmente distribuida?
 
-<!-- - ¿Provienen las mediciones del largo de una población normalmente distribuida? -->
+- ¿Provienen las mediciones del largo de una población normalmente distribuida?
 
-<!-- - Si se pierden datos u hojas, ¿podemos tomar medidas para rellenarlos? ¿Qué medidas? -->
+- Si se pierden datos u hojas, ¿podemos tomar medidas para rellenarlos? ¿Qué medidas?
 
-<!-- - ¿Existen datos inconsistentes entre largo y ancho? -->
+- ¿Existen datos inconsistentes entre largo y ancho?
 
-<!-- ### Melany y María Fernanda -->
+### Melany y María Fernanda
 
-<!-- - ¿Cuál es la media aritmética del ancho de las hojas? -->
+- ¿Cuál es la media aritmética del ancho de las hojas?
 
-<!-- - ¿Cuál es la media aritmética del largo de las hojas? -->
+- ¿Cuál es la media aritmética del largo de las hojas?
 
-<!-- - ¿El ancho de las hojas posee correlación con el largo de las hojas? -->
+- ¿El ancho de las hojas posee correlación con el largo de las hojas?
 
-<!-- ### Angélica -->
+### Angélica
 
-<!-- - ¿Qué probabilidad hay de que las hojas tengan el mismo largo? -->
+- ¿Qué probabilidad hay de que las hojas tengan el mismo largo?
 
-<!-- - ¿ Qué tanto puede dificultar el enves al momento de tomar las medidas? -->
+- ¿ Qué tanto puede dificultar el enves al momento de tomar las medidas?
 
-<!-- - ¿ Qué probabilidad hay e que las hojas posean el mismo ancho? -->
+- ¿ Qué probabilidad hay e que las hojas posean el mismo ancho?
 
-<!-- ### Harly -->
+### Harly
 
-<!-- - Sacar promedio de ancho? -->
+- Sacar promedio de ancho?
 
-<!-- - El color y el tamaño esta relacionado? -->
+- El color y el tamaño esta relacionado?
 
-<!-- - Cuál es promedio relativo de la altura? -->
+- Cuál es promedio relativo de la altura?
 
-<!-- ### Gabriel -->
+### Gabriel
 
-<!-- - Habría alguna diferencia en la medida de la hoja si se mide por el envés? -->
+- Habría alguna diferencia en la medida de la hoja si se mide por el envés?
 
-<!-- - Por qué un individuo tiene hojas de diferentes colores y otro con hojas del mismo color? -->
+- Por qué un individuo tiene hojas de diferentes colores y otro con hojas del mismo color?
 
-<!-- - Las hojas de las plantas tienen alguna lógica matemática para su crecimiento, tienen un numero limite de cm de crecimiento? -->
+- Las hojas de las plantas tienen alguna lógica matemática para su crecimiento, tienen un numero limite de cm de crecimiento?
 
+### Luis
 
-<!-- ### Luis -->
+- ¿Qué probabibilidad hay que de la hoja esté torcida?
 
-<!-- - QUE PROBABILIDAD HAY QUE HOJA ESTE TORCIDA? -->
+- ¿Cuál es la probabilidad de que las hojas tengan el mismo tamaño?
 
-<!-- - CUAL ES LA PROBALIDAD QUE LAS HOJAS TENGAN EL MISMO TAMAÑO? -->
-
-<!-- - CUAL ES LA PROBALIDAD QUE LAS HOJAS PASEN DE 20 CM? -->
-
+- ¿Cuál es la probabilidad de que las hojas pasen de 20 cm?
 
 ## Análisis
 
-```{r, eval=F}
+- Hasta 2 de abril, no se han realizado análisis, sólo consolidación de los archivos. Se realizarán análisis el 9 de abril.
+
+```{r}
 library(readxl)
 library(tidyverse)
+library(kableExtra)
 datos <- read_excel('data/mediciones-hojas.xlsx')
 
-estadisticos_por_grupo <- datos %>% 
+estadisticos_segun_quien_midio <- datos %>% 
   pivot_longer(
-    cols = -(individuo:estudiante),
+    cols = -(grupo:`colectas hechas por`),
     names_to = 'dimensión', values_to = 'valor') %>% 
-  group_by(individuo, dimensión) %>% 
-  summarise(Media = mean(valor),
-            Mediana = median(valor),
-            `Desv. Est.` = sd(valor))
-
+  group_by(grupo, `mediciones hechas por`, dimensión) %>% 
+  summarise(Media = mean(valor)) %>% 
+  # pivot_longer(-(grupo:dimensión), names_to = 'estadísticos', values_to = 'valor')
+  pivot_wider(names_from = 'dimensión', values_from = Media)
+estadisticos_segun_quien_midio %>% kable()
 ```
 
 
